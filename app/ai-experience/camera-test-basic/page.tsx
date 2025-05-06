@@ -13,6 +13,12 @@ export default function CameraTestBasicPage() {
   const [error, setError] = useState<string | null>(null)
   const [logs, setLogs] = useState<string[]>([])
   const [permissionState, setPermissionState] = useState<string>("unknown")
+  const [browserInfo, setBrowserInfo] = useState<{
+    userAgent: string
+    supportsMediaDevices: boolean
+    supportsPermissionsApi: boolean
+    isSecureContext: boolean
+  } | null>(null)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -29,7 +35,7 @@ export default function CameraTestBasicPage() {
       addLog("检查摄像头权限...")
 
       // 尝试使用permissions API
-      if (navigator.permissions && navigator.permissions.query) {
+      if (typeof navigator !== "undefined" && navigator.permissions && navigator.permissions.query) {
         try {
           const result = await navigator.permissions.query({ name: "camera" as PermissionName })
           setPermissionState(result.state)
@@ -65,7 +71,7 @@ export default function CameraTestBasicPage() {
       addLog("开始启动摄像头...")
 
       // 检查浏览器支持
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("您的浏览器不支持摄像头功能")
       }
 
@@ -153,7 +159,19 @@ export default function CameraTestBasicPage() {
     addLog("摄像头已停止")
   }
 
-  // 组件卸载时停止摄像头
+  // 获取浏览器信息
+  useEffect(() => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      setBrowserInfo({
+        userAgent: navigator.userAgent,
+        supportsMediaDevices: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
+        supportsPermissionsApi: !!(navigator.permissions && navigator.permissions.query),
+        isSecureContext: !!window.isSecureContext,
+      })
+    }
+  }, [])
+
+  // 组件挂载时添加日志
   useEffect(() => {
     addLog("组件已挂载")
 
@@ -248,12 +266,16 @@ export default function CameraTestBasicPage() {
             <div className="mt-6 border rounded-lg p-4 bg-gray-50">
               <h3 className="text-sm font-medium mb-2">浏览器信息</h3>
               <div className="text-xs font-mono bg-black text-green-400 p-2 rounded">
-                <div>用户代理: {navigator.userAgent}</div>
-                <div>
-                  浏览器支持摄像头API: {navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? "是" : "否"}
-                </div>
-                <div>浏览器支持权限API: {navigator.permissions && navigator.permissions.query ? "是" : "否"}</div>
-                <div>是否安全上下文: {window.isSecureContext ? "是" : "否"}</div>
+                {browserInfo ? (
+                  <>
+                    <div>用户代理: {browserInfo.userAgent}</div>
+                    <div>浏览器支持摄像头API: {browserInfo.supportsMediaDevices ? "是" : "否"}</div>
+                    <div>浏览器支持权限API: {browserInfo.supportsPermissionsApi ? "是" : "否"}</div>
+                    <div>是否安全上下文: {browserInfo.isSecureContext ? "是" : "否"}</div>
+                  </>
+                ) : (
+                  <div>加载浏览器信息中...</div>
+                )}
               </div>
             </div>
           </CardContent>
