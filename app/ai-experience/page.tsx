@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, ChevronRight, Bot, ImageIcon, FileText, Mic, Brain, Info, ArrowRight } from "lucide-react"
+import { Search, ChevronRight, Bot, ImageIcon, FileText, Mic, Brain, Info, ArrowRight, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
 
 // 导入聊天组件
 import AIChat from "@/components/ai-chat"
@@ -30,10 +32,20 @@ const aiModules = [
   {
     id: "image-classification",
     title: "图像分类",
-    description: "上传图片或使用摄像头，AI将��别图像中的物体、场景或内容",
+    description: "上传图片或使用摄像头，AI将识别图像中的物体、场景或内容",
     icon: <ImageIcon className="h-6 w-6" />,
     category: "视觉",
     tags: ["图像识别", "物体检测"],
+    featured: true,
+    new: false,
+  },
+  {
+    id: "ai-training",
+    title: "AI训练",
+    description: "收集样本、训练模型、测试效果，创建自己的图像分类模型",
+    icon: <Settings className="h-6 w-6" />,
+    category: "视觉",
+    tags: ["模型训练", "自定义AI"],
     featured: true,
     new: true,
   },
@@ -137,6 +149,12 @@ export default function AIExperiencePage() {
       return
     }
 
+    // 如果是AI训练模块，导航到AI训练页面
+    if (moduleId === "ai-training") {
+      router.push("/ai-experience/ai-training")
+      return
+    }
+
     setSelectedModule(moduleId)
     // 在移动设备上，滚动到顶部
     if (isMobile) {
@@ -220,7 +238,9 @@ export default function AIExperiencePage() {
                                       ? "bg-purple-100 text-purple-600"
                                       : module.id === "pose-detection"
                                         ? "bg-amber-100 text-amber-600"
-                                        : "bg-rose-100 text-rose-600",
+                                        : module.id === "ai-training"
+                                          ? "bg-blue-100 text-blue-600"
+                                          : "bg-rose-100 text-rose-600",
                               )}
                             >
                               {module.icon}
@@ -284,7 +304,9 @@ export default function AIExperiencePage() {
                                 ? "bg-purple-100 text-purple-600"
                                 : selectedModule === "pose-detection"
                                   ? "bg-amber-100 text-amber-600"
-                                  : "bg-rose-100 text-rose-600",
+                                  : selectedModule === "ai-training"
+                                    ? "bg-blue-100 text-blue-600"
+                                    : "bg-rose-100 text-rose-600",
                         )}
                       >
                         {getCurrentModule()?.icon}
@@ -357,7 +379,9 @@ export default function AIExperiencePage() {
                             ? "bg-purple-500"
                             : module.id === "pose-detection"
                               ? "bg-amber-500"
-                              : "bg-rose-500",
+                              : module.id === "ai-training"
+                                ? "bg-blue-500"
+                                : "bg-rose-500",
                     )}
                   ></div>
                   <CardContent className="pt-6">
@@ -373,7 +397,9 @@ export default function AIExperiencePage() {
                                 ? "bg-purple-100 text-purple-600"
                                 : module.id === "pose-detection"
                                   ? "bg-amber-100 text-amber-600"
-                                  : "bg-rose-100 text-rose-600",
+                                  : module.id === "ai-training"
+                                    ? "bg-blue-100 text-blue-600"
+                                    : "bg-rose-100 text-rose-600",
                         )}
                       >
                         {module.icon}
@@ -391,6 +417,27 @@ export default function AIExperiencePage() {
                   </CardFooter>
                 </Card>
               ))}
+            <Card className="overflow-hidden border-2 hover:border-blue-400 transition-colors">
+              <Link href="/ai-experience/ai-training">
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mr-3">
+                      <Settings className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg text-blue-800">AI训练</CardTitle>
+                      <p className="text-sm text-blue-700">训练自己的图像分类模型</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-blue-500 hover:bg-blue-600">新</Badge>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="relative h-40 bg-gray-100">
+                    <Image src="/placeholder.svg?key=irg6p" alt="AI训练界面" fill className="object-cover" />
+                  </div>
+                </CardContent>
+              </Link>
+            </Card>
           </div>
         </div>
       </div>
