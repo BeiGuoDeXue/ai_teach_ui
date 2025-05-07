@@ -32,6 +32,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
+// 简化的视频URL处理函数
+const getVideoUrl = (videoPath: string) => {
+  // 如果是完整URL（以http开头），直接返回
+  if (videoPath.startsWith("http")) {
+    return videoPath
+  }
+
+  // 如果以/开头，说明是从网站根目录开始的路径，直接返回
+  if (videoPath.startsWith("/")) {
+    return videoPath
+  }
+
+  // 否则，拼接到/videos/目录下
+  return `/videos/${videoPath}`
+}
+
 export default function CourseDetail({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("overview")
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
@@ -62,8 +78,8 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
         duration: "2小时",
         completed: false,
         resources: [
-          { id: "1-1", type: "pdf", title: "arduino_book.pdf", url: "#" },
-          { id: "1-2", type: "video", title: "arduino_car.mp4", url: "#" },
+          { id: "1-1", type: "pdf", title: "arduino_book.pdf", url: "arduino_book.pdf" },
+          { id: "1-2", type: "video", title: "arduino_car.mp4", url: "arduino_car.mp4" },
         ],
       },
       {
@@ -483,7 +499,7 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
                                           onPlay={() => setIsVideoPlaying(true)}
                                           onPause={() => setIsVideoPlaying(false)}
                                         >
-                                          <source src="/placeholder-video.mp4" type="video/mp4" />
+                                          <source src={getVideoUrl(resource.url)} type="video/mp4" />
                                           您的浏览器不支持视频播放
                                         </video>
                                       </div>

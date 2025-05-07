@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata = {
   title: "维客未来 - AI教育平台",
   description: "专业AI教育解决方案提供商",
+  icons: {
+    icon: "/favicon.ico",
+  },
     generator: 'v0.dev'
 }
 

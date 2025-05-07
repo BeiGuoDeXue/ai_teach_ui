@@ -31,8 +31,16 @@ export default function CodeAssistant() {
   const generatorRegistered = useRef(false)
   const [selectedExample, setSelectedExample] = useState("default")
   const [showHelp, setShowHelp] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    // 设置isClient为true，表示现在是在客户端渲染
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return // 确保只在客户端执行
+
     // 动态加载Blockly库
     const loadBlockly = async () => {
       try {
@@ -120,11 +128,14 @@ export default function CodeAssistant() {
         }
       }
     }
-  }, [])
+  }, [isClient])
 
   const initBlockly = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (!blocklyDiv.current || typeof window === "undefined" || !window.Blockly) {
       console.error("Cannot initialize Blockly: missing dependencies")
+      setLoadingError("初始化Blockly失败：缺少必要的依赖项。请刷新页面重试。")
       return
     }
 
@@ -193,13 +204,15 @@ export default function CodeAssistant() {
       console.log("Blockly initialization complete")
     } catch (error) {
       console.error("Error initializing Blockly:", error)
-      setLoadingError("初始化Blockly编辑器时出错")
+      setLoadingError("初始化Blockly编辑器时出错: " + (error instanceof Error ? error.message : String(error)))
       setBlocklyLoaded(false)
     }
   }
 
   // 尝试注册生成器
   const tryRegisterGenerators = () => {
+    if (!isClient) return false // 确保只在客户端执行
+
     if (typeof window === "undefined" || !window.Blockly || !window.Blockly.JavaScript) {
       console.warn("Blockly.JavaScript not available yet, will retry...")
       return false
@@ -306,6 +319,8 @@ export default function CodeAssistant() {
   }
 
   const tryLoadExampleProject = (workspace: any) => {
+    if (!isClient) return // 确保只在客户端执行
+
     // 清除任何现有的重试计时器
     if (retryTimerRef.current) {
       clearTimeout(retryTimerRef.current)
@@ -349,6 +364,8 @@ export default function CodeAssistant() {
   }
 
   const createDefaultBlock = (workspace: any) => {
+    if (!isClient) return // 确保只在客户端执行
+
     try {
       if (typeof window === "undefined" || !window.Blockly) return
 
@@ -375,6 +392,8 @@ export default function CodeAssistant() {
   }
 
   const loadExampleProject = (workspace: any, exampleType: string) => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (!workspace || typeof window === "undefined" || !window.Blockly || !window.Blockly.Xml) {
       console.error("Cannot load example project: Blockly.Xml not available")
       return
@@ -570,6 +589,8 @@ export default function CodeAssistant() {
   }
 
   const defineCustomBlocks = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (typeof window === "undefined" || !window.Blockly) return
 
     try {
@@ -945,6 +966,8 @@ export default function CodeAssistant() {
   }
 
   const handleSaveProject = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (!blocklyInstanceRef.current || typeof window === "undefined" || !window.Blockly || !window.Blockly.Xml) return
 
     try {
@@ -969,6 +992,8 @@ export default function CodeAssistant() {
   }
 
   const handleLoadProject = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (typeof window === "undefined" || !window.Blockly || !window.Blockly.Xml) return
 
     // 创建一个隐藏的文件输入元素
@@ -1022,12 +1047,14 @@ export default function CodeAssistant() {
     currentRetry.current = 0
 
     // 重新加载页面
-    window.location.reload()
+    if (typeof window !== "undefined") {
+      window.location.reload()
+    }
   }
 
   const handleExampleChange = (value: string) => {
     setSelectedExample(value)
-    if (blocklyInstanceRef.current && window.Blockly && window.Blockly.Xml) {
+    if (blocklyInstanceRef.current && typeof window !== "undefined" && window.Blockly && window.Blockly.Xml) {
       try {
         loadExampleProject(blocklyInstanceRef.current, value)
       } catch (e) {
@@ -1037,6 +1064,8 @@ export default function CodeAssistant() {
   }
 
   const handleCopyCode = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     navigator.clipboard.writeText(code).then(
       () => {
         alert("代码已复制到剪贴板")
@@ -1049,6 +1078,8 @@ export default function CodeAssistant() {
   }
 
   const handleClearWorkspace = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (blocklyInstanceRef.current) {
       if (confirm("确定要清空工作区吗？此操作不可撤销。")) {
         blocklyInstanceRef.current.clear()
@@ -1057,6 +1088,8 @@ export default function CodeAssistant() {
   }
 
   const handleExportCode = () => {
+    if (!isClient) return // 确保只在客户端执行
+
     if (!code) return
 
     // 创建一个Blob对象
@@ -1233,4 +1266,10 @@ export default function CodeAssistant() {
       </div>
     </div>
   )
+}
+
+declare global {
+  interface Window {
+    Blockly: any
+  }
 }
