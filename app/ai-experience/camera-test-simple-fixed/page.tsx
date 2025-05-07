@@ -13,6 +13,8 @@ export default function CameraTestSimpleFixedPage() {
   const [error, setError] = useState<string | null>(null)
   const [debugLog, setDebugLog] = useState<string[]>([])
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null)
+  const [capturedImagesDiv, setCapturedImagesDiv] = useState<HTMLDivElement | null>(null)
 
   // 添加日志函数
   const addLog = (message: string) => {
@@ -24,6 +26,10 @@ export default function CameraTestSimpleFixedPage() {
   // 组件挂载时
   useEffect(() => {
     addLog("组件已挂载")
+
+    // 获取DOM元素引用
+    setVideoElement(document.getElementById("camera-video") as HTMLVideoElement)
+    setCapturedImagesDiv(document.getElementById("captured-images") as HTMLDivElement)
 
     // 组件卸载时清理
     return () => {
@@ -42,7 +48,7 @@ export default function CameraTestSimpleFixedPage() {
       setIsLoading(true)
 
       // 检查浏览器支持
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         addLog("浏览器不支持摄像头功能")
         setError("您的浏览器不支持摄像头功能")
         setIsLoading(false)
@@ -69,21 +75,22 @@ export default function CameraTestSimpleFixedPage() {
       }
 
       // 直接获取视频元素并设置源
-      const videoElement = document.getElementById("camera-video") as HTMLVideoElement
+      const videoEl =
+        typeof document !== "undefined" ? (document.getElementById("camera-video") as HTMLVideoElement) : null
 
-      if (videoElement) {
+      if (videoEl) {
         addLog("找到视频元素，设置视频源")
 
         try {
-          videoElement.srcObject = mediaStream
+          videoEl.srcObject = mediaStream
           addLog("成功设置视频源")
 
-          videoElement.onloadedmetadata = () => {
+          videoEl.onloadedmetadata = () => {
             addLog("视频元数据已加载")
-            addLog(`视频尺寸: ${videoElement.videoWidth}x${videoElement.videoHeight}`)
+            addLog(`视频尺寸: ${videoEl.videoWidth}x${videoEl.videoHeight}`)
             addLog("尝试播放视频")
 
-            videoElement
+            videoEl
               .play()
               .then(() => {
                 addLog("视频播放成功")
@@ -97,7 +104,7 @@ export default function CameraTestSimpleFixedPage() {
               })
           }
 
-          videoElement.onerror = (e) => {
+          videoEl.onerror = (e) => {
             addLog(`视频元素错误: ${e}`)
             setError(`视频元素错误: ${e}`)
             setIsLoading(false)
@@ -131,10 +138,12 @@ export default function CameraTestSimpleFixedPage() {
       setStream(null)
     }
 
-    const videoElement = document.getElementById("camera-video") as HTMLVideoElement
-    if (videoElement) {
-      addLog("清除视频元素源")
-      videoElement.srcObject = null
+    if (typeof document !== "undefined") {
+      const videoEl = document.getElementById("camera-video") as HTMLVideoElement
+      if (videoEl) {
+        addLog("清除视频元素源")
+        videoEl.srcObject = null
+      }
     }
 
     setIsCameraActive(false)
@@ -142,12 +151,14 @@ export default function CameraTestSimpleFixedPage() {
 
   // 拍照
   const captureImage = () => {
+    if (typeof document === "undefined") return
+
     addLog("尝试拍照")
 
-    const videoElement = document.getElementById("camera-video") as HTMLVideoElement
+    const videoEl = document.getElementById("camera-video") as HTMLVideoElement
     const canvas = document.createElement("canvas")
 
-    if (!videoElement || !isCameraActive) {
+    if (!videoEl || !isCameraActive) {
       addLog("摄像头未启动或未准备好")
       setError("摄像头未启动或未准备好")
       return
@@ -163,15 +174,15 @@ export default function CameraTestSimpleFixedPage() {
       }
 
       // 设置canvas尺寸与视频相同
-      const videoWidth = videoElement.videoWidth || 640
-      const videoHeight = videoElement.videoHeight || 480
+      const videoWidth = videoEl.videoWidth || 640
+      const videoHeight = videoEl.videoHeight || 480
       addLog(`视频尺寸: ${videoWidth}x${videoHeight}`)
 
       canvas.width = videoWidth
       canvas.height = videoHeight
 
       // 在canvas上绘制当前视频帧
-      context.drawImage(videoElement, 0, 0, canvas.width, canvas.height)
+      context.drawImage(videoEl, 0, 0, canvas.width, canvas.height)
 
       // 将canvas内容转换为数据URL
       const dataUrl = canvas.toDataURL("image/jpeg")
@@ -281,7 +292,10 @@ export default function CameraTestSimpleFixedPage() {
               <div className="max-h-60 overflow-y-auto text-xs font-mono bg-black text-green-400 p-2 rounded">
                 <div>摄像头状态: {isCameraActive ? "已启动" : "未启动"}</div>
                 <div>加载状态: {isLoading ? "加载中" : "已完成"}</div>
-                <div>视频元素: {document.getElementById("camera-video") ? "已找到" : "未找到"}</div>
+                <div>
+                  视频元素:{" "}
+                  {typeof document !== "undefined" && document.getElementById("camera-video") ? "已找到" : "未找到"}
+                </div>
                 <div>错误信息: {error || "无"}</div>
                 <div className="mt-2 pt-2 border-t border-gray-700">日志:</div>
                 {debugLog.map((log, index) => (

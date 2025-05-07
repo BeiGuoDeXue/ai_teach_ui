@@ -1,77 +1,98 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { Camera, RefreshCw, ChevronLeft, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-// 定义一个持久化的日志函数
-const usePersistentLog = () => {
-  const [debugLog, setDebugLog] = useState<string[]>([])
-
-  const addLog = (message: string) => {
-    console.log(message)
-    setDebugLog((prev) => [...prev, `${new Date().toISOString().split("T")[1].split(".")[0]}: ${message}`])
-  }
-
-  return { debugLog, addLog }
-}
-
 export default function CameraTestCopyPage() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [debugLog, setDebugLog] = useState<string[]>([])
+  const [stream, setStream] = useState<MediaStream | null>(null)
+  const [browserInfo, setBrowserInfo] = useState<string>("")
 
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const streamRef = useRef<MediaStream | null>(null)
+  // 添加日志函数
+  const addLog = (message: string) => {
+    const timestamp = new Date().toTimeString().split(" ")[0]
+    console.log(`${timestamp}: ${message}`)
+    setDebugLog((prev) => [...prev, `${timestamp}: ${message}`])
+  }
 
-  // 使用持久化的日志函数
-  const { debugLog, addLog } = usePersistentLog()
+  // 组件挂载时
+  useEffect(() => {
+    addLog("组件已挂载")
 
-  // 启动摄像头 - 直接从图像分类页面复制
-  async function startCamera() {
+    // 获取浏览器信息
+    if (typeof navigator !== "undefined") {
+      const browserInfo = `${navigator.userAgent}`
+      setBrowserInfo(browserInfo)
+      addLog(`浏览器信息: ${browserInfo}`)
+    }
+
+    // 组件卸载时清理
+    return () => {
+      addLog("组件将卸载")
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop())
+      }
+    }
+  }, [stream])
+
+  // 启动摄像头
+  const startCamera = async () => {
     try {
-      addLog("======= startCamera START =======")
+      addLog("开始启动摄像头...")
       setError(null)
       setIsLoading(true)
 
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      // 检查浏览器支持
+      if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         addLog("浏览器不支持摄像头功能")
-        throw new Error("您的浏览器不支持摄像头功能")
+        setError("您的浏览器不支持摄像头功能")
+        setIsLoading(false)
+        return
       }
 
-      const constraints = {
-        video: {
-          facingMode: "environment",
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-        },
-      }
+      // 请求摄像头权限
+      addLog("请求摄像头访问...")
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      })
 
-      addLog(`尝试启动摄像头，约束: ${JSON.stringify(constraints)}`)
-      const stream = await navigator.mediaDevices.getUserMedia(constraints)
-      streamRef.current = stream
       addLog("成功获取媒体流")
+      setStream(mediaStream)
 
       // 检查视频轨道
-      const videoTracks = stream.getVideoTracks()
+      const videoTracks = mediaStream.getVideoTracks()
       addLog(`视频轨道数量: ${videoTracks.length}`)
+
       if (videoTracks.length > 0) {
         const settings = videoTracks[0].getSettings()
         addLog(`轨道设置: ${JSON.stringify(settings)}`)
       }
 
+      // 设置视频源
       if (videoRef.current) {
-        addLog("设置视频元素源")
-        videoRef.current.srcObject = stream
+        addLog("找到视频元素，设置视频源")
 
-        videoRef.current.onloadedmetadata = () => {
-          addLog("视频元数据已加载")
-          if (videoRef.current) {
+        try {
+          videoRef.current.srcObject = mediaStream
+          addLog("成功设置视频源")
+
+          videoRef.current.onloadedmetadata = () => {
+            if (!videoRef.current) return
+
+            addLog("视频元数据已加载")
+            addLog(`视频尺寸: ${videoRef.current.videoWidth}x${videoRef.current.videoHeight}`)
             addLog("尝试播放视频")
+
             videoRef.current
               .play()
               .then(() => {
@@ -80,21 +101,28 @@ export default function CameraTestCopyPage() {
                 setIsLoading(false)
               })
               .catch((err) => {
-                addLog(`播放视频失败: ${err instanceof Error ? err.message : String(err)}`)
-                setError(`播放视频失败: ${err instanceof Error ? err.message : String(err)}`)
+                addLog(`视频播放失败: ${err instanceof Error ? err.message : String(err)}`)
+                setError(`视频播放失败: ${err instanceof Error ? err.message : String(err)}`)
                 setIsLoading(false)
               })
           }
+
+          videoRef.current.onerror = (e) => {
+            addLog(`视频元素错误: ${e}`)
+            setError(`视频元素错误: ${e}`)
+            setIsLoading(false)
+          }
+        } catch (err) {
+          addLog(`设置视频源失败: ${err instanceof Error ? err.message : String(err)}`)
+          setError(`设置视频源失败: ${err instanceof Error ? err.message : String(err)}`)
+          setIsLoading(false)
         }
       } else {
-        addLog("视频元素未找到")
-        setError("视频元素未找到")
+        addLog("未找到视频元素 (通过ref)")
+        setError("未找到视频元素，请刷新页面重试")
         setIsLoading(false)
       }
-
-      addLog("======= startCamera END =======")
     } catch (err) {
-      addLog("======= startCamera ERROR =======")
       addLog(`启动摄像头失败: ${err instanceof Error ? err.message : String(err)}`)
       setError(`启动摄像头失败: ${err instanceof Error ? err.message : String(err)}`)
       setIsLoading(false)
@@ -102,15 +130,15 @@ export default function CameraTestCopyPage() {
   }
 
   // 停止摄像头
-  function stopCamera() {
-    addLog("======= stopCamera START =======")
+  const stopCamera = () => {
+    addLog("停止摄像头")
 
-    if (streamRef.current) {
+    if (stream) {
       addLog("停止媒体流轨道")
-      streamRef.current.getTracks().forEach((track) => {
+      stream.getTracks().forEach((track) => {
         track.stop()
       })
-      streamRef.current = null
+      setStream(null)
     }
 
     if (videoRef.current) {
@@ -119,13 +147,11 @@ export default function CameraTestCopyPage() {
     }
 
     setIsCameraActive(false)
-    addLog("摄像头已停止")
-    addLog("======= stopCamera END =======")
   }
 
   // 拍照
-  function captureImage() {
-    addLog("======= captureImage START =======")
+  const captureImage = () => {
+    addLog("尝试拍照")
 
     if (!videoRef.current || !canvasRef.current || !isCameraActive) {
       addLog("摄像头未启动或未准备好")
@@ -134,9 +160,7 @@ export default function CameraTestCopyPage() {
     }
 
     try {
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      const context = canvas.getContext("2d")
+      const context = canvasRef.current.getContext("2d")
 
       if (!context) {
         addLog("无法获取canvas上下文")
@@ -145,37 +169,41 @@ export default function CameraTestCopyPage() {
       }
 
       // 设置canvas尺寸与视频相同
-      const videoWidth = video.videoWidth || 640
-      const videoHeight = video.videoHeight || 480
-      addLog(`视频尺寸: ${videoWidth} x ${videoHeight}`)
+      const videoWidth = videoRef.current.videoWidth || 640
+      const videoHeight = videoRef.current.videoHeight || 480
+      addLog(`视频尺寸: ${videoWidth}x${videoHeight}`)
 
-      canvas.width = videoWidth
-      canvas.height = videoHeight
+      canvasRef.current.width = videoWidth
+      canvasRef.current.height = videoHeight
 
       // 在canvas上绘制当前视频帧
-      context.drawImage(video, 0, 0, canvas.width, canvas.height)
+      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height)
 
       // 将canvas内容转换为数据URL
-      const dataUrl = canvas.toDataURL("image/jpeg")
+      const dataUrl = canvasRef.current.toDataURL("image/jpeg")
       addLog(`成功捕获图像，数据URL长度: ${dataUrl.length}`)
 
-      addLog("======= captureImage END =======")
+      // 显示捕获的图像
+      if (typeof document !== "undefined") {
+        const img = document.createElement("img")
+        img.src = dataUrl
+        img.style.maxWidth = "100%"
+        img.style.maxHeight = "200px"
+        img.style.border = "1px solid #ccc"
+        img.style.borderRadius = "4px"
+        img.style.marginTop = "10px"
+
+        const capturedImagesDiv = document.getElementById("captured-images")
+        if (capturedImagesDiv) {
+          capturedImagesDiv.appendChild(img)
+          addLog("图像已添加到页面")
+        }
+      }
     } catch (err) {
-      addLog("======= captureImage ERROR =======")
       addLog(`截取图像失败: ${err instanceof Error ? err.message : String(err)}`)
       setError(`截取图像失败: ${err instanceof Error ? err.message : String(err)}`)
     }
   }
-
-  // 组件卸载时停止摄像头
-  useEffect(() => {
-    addLog("组件已挂载")
-
-    return () => {
-      addLog("组件将卸载")
-      stopCamera()
-    }
-  }, [])
 
   return (
     <div className="container mx-auto py-8">
@@ -223,13 +251,10 @@ export default function CameraTestCopyPage() {
                       </div>
                     )}
 
-                    <canvas ref={canvasRef} className="hidden" />
-
                     {/* 调试信息覆盖层 */}
-                    {isCameraActive && videoRef.current && (
+                    {isCameraActive && (
                       <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-1 text-xs">
-                        视频尺寸: {videoRef.current.videoWidth || 0}x{videoRef.current.videoHeight || 0} | 就绪状态:{" "}
-                        {videoRef.current.readyState} | 暂停状态: {videoRef.current.paused ? "已暂停" : "播放中"}
+                        视频状态: 活动中
                       </div>
                     )}
                   </>
@@ -252,6 +277,12 @@ export default function CameraTestCopyPage() {
                   </Button>
                 )}
               </div>
+
+              {/* 隐藏的canvas用于截图 */}
+              <canvas ref={canvasRef} style={{ display: "none" }} />
+
+              {/* 捕获的图像容器 */}
+              <div id="captured-images" className="mt-4 flex flex-wrap gap-2"></div>
             </div>
 
             {/* 调试信息 */}
@@ -260,16 +291,9 @@ export default function CameraTestCopyPage() {
               <div className="max-h-60 overflow-y-auto text-xs font-mono bg-black text-green-400 p-2 rounded">
                 <div>摄像头状态: {isCameraActive ? "已启动" : "未启动"}</div>
                 <div>加载状态: {isLoading ? "加载中" : "已完成"}</div>
-                <div>视频元素: {videoRef.current ? "已创建" : "未创建"}</div>
-                {videoRef.current && (
-                  <>
-                    <div>视频宽度: {videoRef.current.videoWidth || "未知"}</div>
-                    <div>视频高度: {videoRef.current.videoHeight || "未知"}</div>
-                    <div>视频就绪状态: {videoRef.current.readyState}</div>
-                    <div>视频暂停状态: {videoRef.current.paused ? "已暂停" : "播放中"}</div>
-                  </>
-                )}
+                <div>视频元素: {videoRef.current ? "已找到" : "未找到"}</div>
                 <div>错误信息: {error || "无"}</div>
+                {browserInfo && <div>浏览器: {browserInfo}</div>}
                 <div className="mt-2 pt-2 border-t border-gray-700">日志:</div>
                 {debugLog.map((log, index) => (
                   <div key={index} className="whitespace-normal break-words">
@@ -281,7 +305,7 @@ export default function CameraTestCopyPage() {
           </CardContent>
           <CardFooter className="bg-gray-50 border-t">
             <div className="text-sm text-gray-500">
-              <p>此页面直接复制了图像分类页面的摄像头实现，用于测试摄像头功能。</p>
+              <p>此页面是摄像头测试页面的复制版本，用于测试不同的摄像头实现方法。</p>
             </div>
           </CardFooter>
         </Card>
