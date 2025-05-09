@@ -17,45 +17,47 @@ import { cn } from "@/lib/utils"
 const coursesData = [
   {
     id: 1,
-    title: "Python人工智能基础",
-    description: "从零开始学习Python编程，掌握AI开发必备的编程技能，包含丰富的实战案例和项目练习。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "AI芯动工坊",
+    description:
+      "探索AI芯片设计与应用，从基础电路到智能系统，通过动手实践项目学习人工智能硬件开发，体验从芯片到智能设备的全流程开发。",
+    image: "/images/ai-chip-workshop-new.png",
     category: "编程基础",
     level: "初级",
     duration: "30小时",
     students: 1250,
     rating: 4.8,
-    tags: ["Python", "AI入门"],
+    tags: ["AI芯片", "硬件开发", "智能系统"],
     instructor: "张教授",
     price: "免费",
     featured: true,
   },
   {
     id: 2,
-    title: "机器学习算法与应用",
-    description: "学习机器学习算法和数据分析技术，通过实际案例掌握数据处理、模型训练和评估的完整流程。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "AI智能制造",
+    description:
+      "探索AI在智能制造领域的应用，学习如何利用人工智能技术优化生产流程、提高效率和质量控制，包含实际工业案例和实践项目。",
+    image: "/images/ai-intelligent-manufacturing-new.png",
     category: "人工智能",
     level: "中级",
     duration: "40小时",
     students: 980,
     rating: 4.7,
-    tags: ["机器学习", "数据分析"],
+    tags: ["智能制造", "工业4.0", "AI应用"],
     instructor: "李博士",
     price: "¥299",
     featured: false,
   },
   {
     id: 3,
-    title: "深度学习与神经网络",
-    description: "深入学习神经网络原理和深度学习框架，构建和训练自己的深度学习模型解决实际问题。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "未来工程师",
+    description: "培养面向未来的工程思维和技能，结合AI、机器人和可持续发展等前沿技术，解决复杂工程问题和社会挑战。",
+    image: "/images/future-engineer-new.png",
     category: "人工智能",
     level: "高级",
     duration: "50小时",
     students: 750,
     rating: 4.9,
-    tags: ["深度学习", "神经网络", "TensorFlow"],
+    tags: ["未来技术", "工程思维", "创新设计"],
     instructor: "王教授",
     price: "¥399",
     featured: true,
@@ -64,7 +66,7 @@ const coursesData = [
     id: 4,
     title: "AI应用能力训练",
     description: "提供Word提示工程、PPT生成、Excel数据分析等AI应用能力训练，帮助用户掌握AI工具使用技巧。",
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/images/ai-application-training.png",
     category: "AI应用",
     level: "初级",
     duration: "20小时",
@@ -77,62 +79,174 @@ const coursesData = [
   },
   {
     id: 5,
-    title: "计算机视觉实战",
-    description: "学习图像处理和计算机视觉技术，从基础原理到高级应用，包含多个实战项目。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "AI创想家",
+    description: "激发创造力与创新思维，学习如何利用AI工具进行创意设计、内容创作和问题解决，培养跨界思维和创新能力。",
+    image: "/images/ai-creative-thinker-new.png",
     category: "人工智能",
     level: "中级",
     duration: "45小时",
     students: 820,
     rating: 4.7,
-    tags: ["计算机视觉", "OpenCV"],
+    tags: ["创意AI", "设计思维", "创新"],
     instructor: "陈博士",
     price: "¥349",
     featured: false,
   },
   {
     id: 6,
-    title: "自然语言处理入门到精通",
-    description: "掌握NLP技术，从文本处理基础到高级模型应用，构建智能文本分析和生成系统。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "精通AI舞者",
+    description: "探索AI与艺术的结合，学习如何利用人工智能技术创作舞蹈动作、编排舞蹈序列，以及实现人机协作的舞蹈表演。",
+    image: "/images/ai-dancer-new.png",
     category: "人工智能",
     level: "高级",
     duration: "55小时",
     students: 680,
     rating: 4.8,
-    tags: ["NLP", "文本分析"],
+    tags: ["AI艺术", "舞蹈创作", "人机协作"],
     instructor: "林教授",
     price: "¥399",
     featured: true,
   },
   {
     id: 7,
-    title: "AI创意积木编程",
-    description: "通过积木式编程学习AI应用开发，适合青少年和编程初学者，培养创造力和逻辑思维。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "激光雷达竞速车",
+    description:
+      "设计、组装和编程自己的激光雷达智能竞速车，学习传感器技术、自动驾驶算法和实时决策系统，通过比赛挑战提升实战能力。",
+    image: "/images/lidar-racing-car.png",
     category: "青少年编程",
     level: "初级",
     duration: "25小时",
     students: 1100,
     rating: 4.9,
-    tags: ["积木编程", "创意思维"],
+    tags: ["激光雷达", "智能车", "自动驾驶"],
     instructor: "孙老师",
     price: "¥199",
     featured: false,
   },
   {
     id: 8,
-    title: "数据科学与可视化",
-    description: "学习数据分析和可视化技术，使用Python和相关工具处理、分析和展示数据。",
-    image: "/placeholder.svg?height=200&width=300",
+    title: "人工智能课程",
+    description:
+      "全面介绍人工智能的基础知识和应用领域，涵盖机器学习、深度学习、计算机视觉和自然语言处理等核心技术，适合AI入门学习。",
+    image: "/images/ai-course-new.png",
     category: "数据科学",
     level: "中级",
     duration: "35小时",
     students: 950,
     rating: 4.6,
-    tags: ["数据分析", "可视化"],
+    tags: ["人工智能", "AI入门", "机器学习"],
     instructor: "赵博士",
     price: "¥299",
+    featured: false,
+  },
+  {
+    id: 9,
+    title: "智能硬件课程",
+    description:
+      "学习智能硬件设计与开发，从电子元件到集成系统，掌握传感器应用、嵌入式编程和物联网技术，打造自己的智能设备。",
+    image: "/images/intelligent-hardware.png",
+    category: "硬件开发",
+    level: "中级",
+    duration: "40小时",
+    students: 780,
+    rating: 4.7,
+    tags: ["智能硬件", "嵌入式系统", "物联网"],
+    instructor: "吴教授",
+    price: "¥349",
+    featured: false,
+  },
+  {
+    id: 10,
+    title: "智能灌溉",
+    description: "学习智能灌溉系统的设计与实现，结合传感器技术、自动控制和数据分析，开发高效节水的农业灌溉解决方案。",
+    image: "/images/intelligent-irrigation.png",
+    category: "智能农业",
+    level: "中级",
+    duration: "35小时",
+    students: 650,
+    rating: 4.5,
+    tags: ["智能农业", "灌溉系统", "物联网"],
+    instructor: "郑博士",
+    price: "¥299",
+    featured: false,
+  },
+  {
+    id: 11,
+    title: "AI架构师",
+    description:
+      "培养AI系统架构设计能力，学习大规模AI系统的设计原则、性能优化和部署策略，成为能够规划和实施AI解决方案的高级人才。",
+    image: "/images/ai-architect.png",
+    category: "人工智能",
+    level: "高级",
+    duration: "60小时",
+    students: 520,
+    rating: 4.9,
+    tags: ["AI架构", "系统设计", "高级开发"],
+    instructor: "黄教授",
+    price: "¥499",
+    featured: true,
+  },
+  {
+    id: 12,
+    title: "AI玩具创造实践",
+    description:
+      "结合AI技术与玩具设计，学习如何创造智能互动玩具，包括语音识别、动作感应和情感交互等功能，激发创新思维和动手能力。",
+    image: "/images/ai-toy-creation.png",
+    category: "创新设计",
+    level: "初级",
+    duration: "30小时",
+    students: 890,
+    rating: 4.7,
+    tags: ["AI玩具", "创意设计", "互动体验"],
+    instructor: "田老师",
+    price: "¥249",
+    featured: false,
+  },
+  {
+    id: 13,
+    title: "信息奥赛",
+    description:
+      "为参加信息学奥林匹克竞赛的学生提供系统培训，涵盖算法设计、数据结构和竞赛策略，提升解题能力和编程技巧。",
+    image: "/images/informatics-olympiad.png",
+    category: "竞赛培训",
+    level: "高级",
+    duration: "80小时",
+    students: 450,
+    rating: 4.8,
+    tags: ["信息学竞赛", "算法", "编程挑战"],
+    instructor: "李教授",
+    price: "¥599",
+    featured: true,
+  },
+  {
+    id: 14,
+    title: "青创课",
+    description: "专为青少年设计的创新创业课程，培养创新思维、团队协作和项目管理能力，通过实践项目体验创业全过程。",
+    image: "/images/youth-innovation.png",
+    category: "青少年教育",
+    level: "初级",
+    duration: "25小时",
+    students: 720,
+    rating: 4.6,
+    tags: ["青少年创新", "创业教育", "项目实践"],
+    instructor: "张老师",
+    price: "¥199",
+    featured: false,
+  },
+  {
+    id: 15,
+    title: "3D建模",
+    description:
+      "学习3D建模技术和工具，从基础造型到高级渲染，掌握三维设计的核心技能，应用于游戏开发、产品设计和虚拟现实等领域。",
+    image: "/images/3d-modeling.png",
+    category: "设计与创意",
+    level: "中级",
+    duration: "45小时",
+    students: 850,
+    rating: 4.7,
+    tags: ["3D设计", "建模技术", "数字艺术"],
+    instructor: "王设计师",
+    price: "¥399",
     featured: false,
   },
 ]
@@ -145,6 +259,12 @@ const categories = [
   { id: "ai-application", name: "AI应用" },
   { id: "youth-programming", name: "青少年编程" },
   { id: "data-science", name: "数据科学" },
+  { id: "hardware", name: "硬件开发" },
+  { id: "smart-agriculture", name: "智能农业" },
+  { id: "creative-design", name: "创新设计" },
+  { id: "competition", name: "竞赛培训" },
+  { id: "youth-education", name: "青少年教育" },
+  { id: "design", name: "设计与创意" },
 ]
 
 // 难度级别
@@ -161,6 +281,8 @@ export default function CoursesPage() {
   const [filteredCourses, setFilteredCourses] = useState(coursesData)
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState("popular")
+  const [currentPage, setCurrentPage] = useState(1)
+  const coursesPerPage = 9
 
   // 过滤课程
   useEffect(() => {
@@ -185,6 +307,12 @@ export default function CoursesPage() {
           "ai-application": "AI应用",
           "youth-programming": "青少年编程",
           "data-science": "数据科学",
+          hardware: "硬件开发",
+          "smart-agriculture": "智能农业",
+          "creative-design": "创新设计",
+          competition: "竞赛培训",
+          "youth-education": "青少年教育",
+          design: "设计与创意",
         }
         return course.category === categoryMap[selectedCategory]
       })
@@ -206,6 +334,8 @@ export default function CoursesPage() {
     }
 
     setFilteredCourses(result)
+    // 重置到第一页
+    setCurrentPage(1)
   }, [searchTerm, selectedCategory, selectedLevels, sortBy])
 
   // 切换难度级别选择
@@ -219,6 +349,12 @@ export default function CoursesPage() {
     setSelectedCategory("all")
     setSelectedLevels([])
   }
+
+  // 分页逻辑
+  const indexOfLastCourse = currentPage * coursesPerPage
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage
+  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse)
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage)
 
   return (
     <div className="container mx-auto py-10">
@@ -251,12 +387,12 @@ export default function CoursesPage() {
                 筛选
                 <ChevronDown size={16} className={cn("transition-transform", showFilters ? "rotate-180" : "")} />
               </Button>
-              <div className="relative">
+              <div className="relative group">
                 <Button variant="outline" className="flex items-center gap-2">
                   排序
                   <ChevronDown size={16} />
                 </Button>
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-10 hidden">
+                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-10 hidden group-hover:block">
                   <div className="py-1">
                     <button
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
@@ -286,11 +422,20 @@ export default function CoursesPage() {
           {showFilters && (
             <div className="mt-4 border-t pt-4">
               <div className="flex flex-wrap gap-6">
-                <div>
+                <div className="w-full">
                   <h3 className="text-sm font-medium mb-2">课程分类</h3>
                   <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
                     <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
-                      {categories.map((category) => (
+                      {categories.slice(0, 6).map((category) => (
+                        <TabsTrigger key={category.id} value={category.id} className="text-xs md:text-sm py-1.5 px-2">
+                          {category.name}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
+                  <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full mt-2">
+                    <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
+                      {categories.slice(6).map((category) => (
                         <TabsTrigger key={category.id} value={category.id} className="text-xs md:text-sm py-1.5 px-2">
                           {category.name}
                         </TabsTrigger>
@@ -330,11 +475,16 @@ export default function CoursesPage() {
 
         {/* 课程列表 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((course) => (
+          {currentCourses.map((course) => (
             <Link href={`/courses/${course.id}`} key={course.id} className="group">
               <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
                 <div className="relative h-48">
-                  <Image src={course.image || "/placeholder.svg"} alt={course.title} fill className="object-cover" />
+                  <Image
+                    src={course.image || "/placeholder.svg?height=200&width=300&query=course thumbnail"}
+                    alt={course.title}
+                    fill
+                    className="object-cover"
+                  />
                   {course.featured && (
                     <Badge className="absolute top-3 left-3 bg-amber-500 hover:bg-amber-600">精选</Badge>
                   )}
@@ -388,19 +538,33 @@ export default function CoursesPage() {
         {/* 分页 */}
         <div className="mt-8 flex justify-center">
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            >
               上一页
             </Button>
-            <Button variant="outline" size="sm" className="bg-blue-50 text-blue-600">
-              1
-            </Button>
-            <Button variant="outline" size="sm">
-              2
-            </Button>
-            <Button variant="outline" size="sm">
-              3
-            </Button>
-            <Button variant="outline" size="sm">
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant="outline"
+                size="sm"
+                className={currentPage === page ? "bg-blue-50 text-blue-600" : ""}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Button>
+            ))}
+
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            >
               下一页
             </Button>
           </div>
