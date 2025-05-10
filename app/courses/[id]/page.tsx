@@ -68,7 +68,7 @@ const getCourseData = (courseId: string) => {
           duration: "3小时",
           completed: false,
           resources: [
-            { id: "1-1", type: "pdf", title: "第一章课件.pdf", url: "第一章课件.pdf" },
+            { id: "1-1", type: "pdf", title: "第一章课件.pdf", url: "/pdfs/第一章课件.pdf" },
             { id: "1-2", type: "video", title: "认识人工智能.mp4", url: "认识人工智能.mp4" },
           ],
         },
@@ -944,6 +944,9 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
 
   // 获取课程数据
   const course = getCourseData(params.id)
+
+  // 修复自动打开PDF的bug - 移除自动打开PDF的useEffect
+  // 不再自动打开PDF，只有当用户点击时才会打开
 
   // 检查是否有权限查看课程
   const hasPermission = ["1", "2", "3", "6", "9"].includes(params.id)
