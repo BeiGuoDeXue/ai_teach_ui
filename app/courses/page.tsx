@@ -17,6 +17,38 @@ import { cn } from "@/lib/utils"
 const coursesData = [
   {
     id: 1,
+    title: "人工智能基础与应用",
+    description:
+      "本课程将带领小学生化身&quot;AI小侦探&quot;，揭开人工智能的神秘面纱！通过游戏化学习、互动实验与创意项目，学生将探索人脸识别、语音助手、机器翻译等AI技术背后的魔法。课程以&quot;理解AI→训练AI→应用AI→反思AI&quot;为主线，结合生活场景（如垃圾分类、宠物识别、动画生成），使用可视化AI工具（如TeachableMachine、Blockly编程）和趣味数据集（如表情包图片、动物叫声），亲手训练会&quot;思考&quot;的模型，设计能&quot;对话&quot;的程序，解锁&quot;AI+创造力&quot;的无限可能！让科技不再冰冷，让算法充满童心！",
+    image: "/images/ai-course-new.png",
+    category: "人工智能",
+    level: "小学",
+    duration: "30小时",
+    students: 1200,
+    rating: 4.8,
+    tags: ["人工智能", "图像识别", "语音助手", "创意项目"],
+    instructor: "张老师",
+    price: "免费",
+    featured: true,
+  },
+  {
+    id: 2,
+    title: "deepseek学习",
+    description:
+      "本课程以&quot;深度探索（DeepSeek）&quot;为核心，带领小学生化身&quot;知识探矿者&quot;，在人工智能、自然奥秘与数字科技的丛林中展开冒险！课程采用&quot;问题驱动的深度探究法&quot;，围绕&quot;AI如何学习&quot;&quot;数据如何说话&quot;&quot;算法如何思考&quot;等主题，通过互动游戏、虚拟实验室和跨学科项目，解密深度学习的基础逻辑。学生将亲手训练会&quot;进化&quot;的AI模型，设计能&quot;自主思考&quot;的互动程序，并在沉浸式场景中体验完整探索过程，培养科学家的思维方式！",
+    image: "/images/ai-intelligent-manufacturing-new.png",
+    category: "人工智能",
+    level: "小学",
+    duration: "25小时",
+    students: 980,
+    rating: 4.7,
+    tags: ["深度学习", "AI模型", "数据分析", "探索式学习"],
+    instructor: "李博士",
+    price: "¥299",
+    featured: true,
+  },
+  {
+    id: 3,
     title: "AI芯动工坊",
     description:
       "探索AI芯片设计与应用，从基础电路到智能系统，通过动手实践项目学习人工智能硬件开发，体验从芯片到智能设备的全流程开发。",
@@ -32,7 +64,7 @@ const coursesData = [
     featured: true,
   },
   {
-    id: 2,
+    id: 4,
     title: "AI智能制造",
     description:
       "探索AI在智能制造领域的应用，学习如何利用人工智能技术优化生产流程、提高效率和质量控制，包含实际工业案例和实践项目。",
@@ -48,7 +80,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 3,
+    id: 5,
     title: "未来工程师",
     description: "培养面向未来的工程思维和技能，结合AI、机器人和可持续发展等前沿技术，解决复杂工程问题和社会挑战。",
     image: "/images/future-engineer-new.png",
@@ -63,7 +95,7 @@ const coursesData = [
     featured: true,
   },
   {
-    id: 4,
+    id: 6,
     title: "AI应用能力训练",
     description: "提供Word提示工程、PPT生成、Excel数据分析等AI应用能力训练，帮助用户掌握AI工具使用技巧。",
     image: "/images/ai-application-training.png",
@@ -72,28 +104,13 @@ const coursesData = [
     duration: "20小时",
     students: 1500,
     rating: 4.6,
-    tags: ["提示工程", "AI应用"],
+    tags: ["提示工程", "AI应用", "AIGC", "大语言模型"],
     instructor: "刘老师",
     price: "免费",
     featured: false,
   },
   {
-    id: 5,
-    title: "AI创想家",
-    description: "激发创造力与创新思维，学习如何利用AI工具进行创意设计、内容创作和问题解决，培养跨界思维和创新能力。",
-    image: "/images/ai-creative-thinker-new.png",
-    category: "人工智能",
-    level: "中级",
-    duration: "45小时",
-    students: 820,
-    rating: 4.7,
-    tags: ["创意AI", "设计思维", "创新"],
-    instructor: "陈博士",
-    price: "¥349",
-    featured: false,
-  },
-  {
-    id: 6,
+    id: 8,
     title: "精通AI舞者",
     description: "探索AI与艺术的结合，学习如何利用人工智能技术创作舞蹈动作、编排舞蹈序列，以及实现人机协作的舞蹈表演。",
     image: "/images/ai-dancer-new.png",
@@ -108,23 +125,23 @@ const coursesData = [
     featured: true,
   },
   {
-    id: 7,
+    id: 9,
     title: "激光雷达竞速车",
     description:
-      "设计、组装和编程自己的激光雷达智能竞速车，学习传感器技术、自动驾驶算法和实时决策系统，通过比赛挑战提升实战能力。",
+      "围绕着车辆主控制板Arduino、直流电机及驱动、转向舵机等硬件，结合arduinoC语言，通过项目式学习，最终让学生自主设计完成一个激光雷达小车。",
     image: "/images/lidar-racing-car.png",
     category: "青少年编程",
     level: "初级",
     duration: "25小时",
     students: 1100,
     rating: 4.9,
-    tags: ["激光雷达", "智能车", "自动驾驶"],
+    tags: ["激光雷达", "智能车", "自动驾驶", "Arduino"],
     instructor: "孙老师",
     price: "¥199",
     featured: false,
   },
   {
-    id: 8,
+    id: 10,
     title: "人工智能课程",
     description:
       "全面介绍人工智能的基础知识和应用领域，涵盖机器学习、深度学习、计算机视觉和自然语言处理等核心技术，适合AI入门学习。",
@@ -140,7 +157,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 9,
+    id: 11,
     title: "智能硬件课程",
     description:
       "学习智能硬件设计与开发，从电子元件到集成系统，掌握传感器应用、嵌入式编程和物联网技术，打造自己的智能设备。",
@@ -156,7 +173,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 10,
+    id: 12,
     title: "智能灌溉",
     description: "学习智能灌溉系统的设计与实现，结合传感器技术、自动控制和数据分析，开发高效节水的农业灌溉解决方案。",
     image: "/images/intelligent-irrigation.png",
@@ -171,7 +188,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 11,
+    id: 13,
     title: "AI架构师",
     description:
       "培养AI系统架构设计能力，学习大规模AI系统的设计原则、性能优化和部署策略，成为能够规划和实施AI解决方案的高级人才。",
@@ -187,7 +204,7 @@ const coursesData = [
     featured: true,
   },
   {
-    id: 12,
+    id: 14,
     title: "AI玩具创造实践",
     description:
       "结合AI技术与玩具设计，学习如何创造智能互动玩具，包括语音识别、动作感应和情感交互等功能，激发创新思维和动手能力。",
@@ -203,7 +220,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 13,
+    id: 15,
     title: "信息奥赛",
     description:
       "为参加信息学奥林匹克竞赛的学生提供系统培训，涵盖算法设计、数据结构和竞赛策略，提升解题能力和编程技巧。",
@@ -219,7 +236,7 @@ const coursesData = [
     featured: true,
   },
   {
-    id: 14,
+    id: 16,
     title: "青创课",
     description: "专为青少年设计的创新创业课程，培养创新思维、团队协作和项目管理能力，通过实践项目体验创业全过程。",
     image: "/images/youth-innovation.png",
@@ -234,7 +251,7 @@ const coursesData = [
     featured: false,
   },
   {
-    id: 15,
+    id: 17,
     title: "3D建模",
     description:
       "学习3D建模技术和工具，从基础造型到高级渲染，掌握三维设计的核心技能，应用于游戏开发、产品设计和虚拟现实等领域。",
@@ -254,17 +271,9 @@ const coursesData = [
 // 分类数据
 const categories = [
   { id: "all", name: "全部" },
-  { id: "programming", name: "编程基础" },
-  { id: "ai", name: "人工智能" },
-  { id: "ai-application", name: "AI应用" },
-  { id: "youth-programming", name: "青少年编程" },
-  { id: "data-science", name: "数据科学" },
-  { id: "hardware", name: "硬件开发" },
-  { id: "smart-agriculture", name: "智能农业" },
-  { id: "creative-design", name: "创新设计" },
-  { id: "competition", name: "竞赛培训" },
-  { id: "youth-education", name: "青少年教育" },
-  { id: "design", name: "设计与创意" },
+  { id: "primary", name: "小学" },
+  { id: "middle", name: "初中" },
+  { id: "high", name: "高中" },
 ]
 
 // 难度级别
@@ -302,19 +311,11 @@ export default function CoursesPage() {
     if (selectedCategory !== "all") {
       result = result.filter((course) => {
         const categoryMap: { [key: string]: string } = {
-          programming: "编程基础",
-          ai: "人工智能",
-          "ai-application": "AI应用",
-          "youth-programming": "青少年编程",
-          "data-science": "数据科学",
-          hardware: "硬件开发",
-          "smart-agriculture": "智能农业",
-          "creative-design": "创新设计",
-          competition: "竞赛培训",
-          "youth-education": "青少年教育",
-          design: "设计与创意",
+          primary: "小学",
+          middle: "初中",
+          high: "高中",
         }
-        return course.category === categoryMap[selectedCategory]
+        return course.level === categoryMap[selectedCategory]
       })
     }
 
