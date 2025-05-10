@@ -16,6 +16,7 @@ import {
   Layers,
   Zap,
   FileText,
+  Download,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -23,7 +24,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { VideoPlayer } from "@/components/video-player"
-import { PDFViewer } from "@/components/pdf-viewer"
+import { useToast } from "@/components/ui/use-toast"
 
 // 简化的视频URL处理函数
 const getVideoUrl = (videoPath: string) => {
@@ -39,6 +40,26 @@ const getVideoUrl = (videoPath: string) => {
 
   // 否则，拼接到/videos/目录下
   return `/videos/${videoPath}`
+}
+
+// 获取PDF下载URL
+const getPdfUrl = (pdfPath: string) => {
+  // 如果是完整URL（以http开头），直接返回
+  if (pdfPath.startsWith("http")) {
+    return pdfPath
+  }
+
+  // 确保路径以/开头
+  const normalizedPath = pdfPath.startsWith("/") ? pdfPath : `/${pdfPath}`
+
+  // 如果路径中不包含/pdfs/，则添加到pdfs目录
+  if (!normalizedPath.includes("/pdfs/")) {
+    // 移除可能的前导斜杠，以避免双斜杠
+    const cleanPath = normalizedPath.startsWith("/") ? normalizedPath.substring(1) : normalizedPath
+    return `/pdfs/${cleanPath}`
+  }
+
+  return normalizedPath
 }
 
 // 课程数据 - 根据课程ID返回不同的课程内容
@@ -232,7 +253,7 @@ const getCourseData = (courseId: string) => {
       title: "deepseek学习",
       description:
         '本课程以"深度探索（DeepSeek）"为核心，带领小学生化身"知识探矿者"，在人工智能、自然奥秘与数字科技的丛林中展开冒险！课程采用"问题驱动的深度探究法"，围绕"AI如何学习""数据如何说话""算法如何思考"等主题，通过互动游戏、虚拟实验室和跨学科项目，解密深度学习的基础逻辑。学生将亲手训练会"进化"的AI模型（如预测天气的神经网络、识别星座的视觉系统），设计能"自主思考"的互动程序，并在"数据迷宫""算法解密屋"等沉浸式场景中，体验从现象观察→假设提出→模型验证→知识迁移的完整探索过程，培养科学家的思维方式！',
-      image: "/images/ai-intelligent-manufacturing-new.png",
+      image: "/images/deepseek-logo.jpeg", // 更新为新的DeepSeek图片
       category: "人工智能",
       level: "小学",
       duration: "25小时",
@@ -937,19 +958,44 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("overview")
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const { toast } = useToast()
 
-  // 新增状态用于视频和PDF查看器
+  // 新增状态用于视频播放器
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
-  const [selectedPdf, setSelectedPdf] = useState<{ url: string; title: string } | null>(null)
 
   // 获取课程数据
   const course = getCourseData(params.id)
 
-  // 修复自动打开PDF的bug - 移除自动打开PDF的useEffect
-  // 不再自动打开PDF，只有当用户点击时才会打开
-
   // 检查是否有权限查看课程
   const hasPermission = ["1", "2", "3", "6", "9"].includes(params.id)
+
+  // 处理PDF下载
+  const handleDownloadPdf = (pdfUrl: string, title: string) => {
+    try {
+      const fullUrl = getPdfUrl(pdfUrl)
+
+      // 创建一个临时链接元素
+      const link = document.createElement("a")
+      link.href = fullUrl
+      link.download = title // 设置下载文件名
+      link.target = "_blank"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      toast({
+        title: "下载已开始",
+        description: `正在下载 ${title}`,
+      })
+    } catch (error) {
+      console.error("下载PDF时出错:", error)
+      toast({
+        title: "下载失败",
+        description: "无法下载PDF文件，请稍后再试",
+        variant: "destructive",
+      })
+    }
+  }
 
   // 如果没有权限，显示购买提示
   if (!hasPermission) {
@@ -1328,13 +1374,20 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
                               size="sm"
                               onClick={() => {
                                 if (resource.type === "pdf") {
-                                  setSelectedPdf({ url: resource.url, title: resource.title })
+                                  handleDownloadPdf(resource.url, resource.title)
                                 } else if (resource.type === "video") {
                                   setSelectedVideo({ url: resource.url, title: resource.title })
                                 }
                               }}
                             >
-                              {resource.type === "pdf" ? "查看" : "播放"}
+                              {resource.type === "pdf" ? (
+                                <div className="flex items-center">
+                                  <Download className="h-3 w-3 mr-1" />
+                                  下载
+                                </div>
+                              ) : (
+                                "播放"
+                              )}
                             </Button>
                           </div>
                         ))}
@@ -1375,13 +1428,20 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
                                         size="sm"
                                         onClick={() => {
                                           if (resource.type === "pdf") {
-                                            setSelectedPdf({ url: resource.url, title: resource.title })
+                                            handleDownloadPdf(resource.url, resource.title)
                                           } else if (resource.type === "video") {
                                             setSelectedVideo({ url: resource.url, title: resource.title })
                                           }
                                         }}
                                       >
-                                        {resource.type === "pdf" ? "查看" : "播放"}
+                                        {resource.type === "pdf" ? (
+                                          <div className="flex items-center">
+                                            <Download className="h-3 w-3 mr-1" />
+                                            下载
+                                          </div>
+                                        ) : (
+                                          "播放"
+                                        )}
                                       </Button>
                                     </div>
                                   ))}
@@ -1485,16 +1545,6 @@ export default function CourseDetail({ params }: { params: { id: string } }) {
           onClose={() => setSelectedVideo(null)}
           videoUrl={selectedVideo.url}
           title={selectedVideo.title}
-        />
-      )}
-
-      {/* PDF查看器模态框 */}
-      {selectedPdf && (
-        <PDFViewer
-          isOpen={!!selectedPdf}
-          onClose={() => setSelectedPdf(null)}
-          pdfUrl={selectedPdf.url}
-          title={selectedPdf.title}
         />
       )}
     </div>

@@ -36,7 +36,7 @@ const coursesData = [
     title: "deepseek学习",
     description:
       "本课程以&quot;深度探索（DeepSeek）&quot;为核心，带领小学生化身&quot;知识探矿者&quot;，在人工智能、自然奥秘与数字科技的丛林中展开冒险！课程采用&quot;问题驱动的深度探究法&quot;，围绕&quot;AI如何学习&quot;&quot;数据如何说话&quot;&quot;算法如何思考&quot;等主题，通过互动游戏、虚拟实验室和跨学科项目，解密深度学习的基础逻辑。学生将亲手训练会&quot;进化&quot;的AI模型，设计能&quot;自主思考&quot;的互动程序，并在沉浸式场景中体验完整探索过程，培养科学家的思维方式！",
-    image: "/images/ai-intelligent-manufacturing-new.png",
+    image: "/images/deepseek-logo.jpeg",
     category: "人工智能",
     level: "小学",
     duration: "25小时",
