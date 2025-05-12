@@ -46,10 +46,10 @@ export default function Home() {
       tags: ["AI芯片", "硬件开发"],
     },
     {
-      id: 12,
-      title: "智能灌溉",
-      description: "结合AI技术和物联网设备，设计和实现智能灌溉系统，解决农业水资源管理问题。",
-      tags: ["物联网", "智能农业"],
+      id: 6,
+      title: "AI应用能力训练",
+      description: "提供Word提示工程、PPT生成、Excel数据分析等AI应用能力训练，帮助用户掌握AI工具使用技巧。",
+      tags: ["提示工程", "AI应用"],
     },
   ]
 

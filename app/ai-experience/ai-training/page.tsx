@@ -1397,7 +1397,7 @@ export default function AITrainingPage() {
                           ) : (
                             <div className="text-center py-8 text-gray-500">
                               <Info className="h-8 w-8 mx-auto mb-2" />
-                              <p>请先上传或拍摄一张图像</p>
+                              <p>请先上传或拍摄一张图��</p>
                             </div>
                           )}
                         </div>

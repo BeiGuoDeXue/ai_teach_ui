@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/components/ui/use-toast"
 
 // 课程数据
 const coursesData = [
@@ -90,7 +91,7 @@ const coursesData = [
     students: 750,
     rating: 4.9,
     tags: ["未来技术", "工程思维", "创新设计"],
-    instructor: "王教授",
+    instructor: "王老师",
     price: "¥399",
     featured: true,
   },
@@ -120,7 +121,7 @@ const coursesData = [
     students: 680,
     rating: 4.8,
     tags: ["AI艺术", "舞蹈创作", "人机协作"],
-    instructor: "林教授",
+    instructor: "林老师",
     price: "¥399",
     featured: true,
   },
@@ -199,7 +200,7 @@ const coursesData = [
     students: 520,
     rating: 4.9,
     tags: ["AI架构", "系统设计", "高级开发"],
-    instructor: "黄教授",
+    instructor: "黄老师",
     price: "¥499",
     featured: true,
   },
@@ -274,16 +275,21 @@ const categories = [
   { id: "primary", name: "小学" },
   { id: "middle", name: "初中" },
   { id: "high", name: "高中" },
+  { id: "tools", name: "工具" },
+  { id: "datasets", name: "数据集" },
+  { id: "readings", name: "读本" },
+  { id: "achievements", name: "获得" },
 ]
 
-// 难度级别
+// 难度级别数据
 const levels = [
-  { id: "beginner", name: "初级" },
-  { id: "intermediate", name: "中级" },
-  { id: "advanced", name: "高级" },
+  { id: "primary", name: "小学" },
+  { id: "middle", name: "初中" },
+  { id: "high", name: "高中" },
 ]
 
 export default function CoursesPage() {
+  const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedLevels, setSelectedLevels] = useState<string[]>([])
@@ -349,6 +355,15 @@ export default function CoursesPage() {
     setSearchTerm("")
     setSelectedCategory("all")
     setSelectedLevels([])
+  }
+
+  // 处理新分类点击
+  const handleNewCategoryClick = (category: string) => {
+    toast({
+      title: "功能未开通",
+      description: "请联系代理商开通此功能",
+      variant: "default",
+    })
   }
 
   // 分页逻辑
@@ -426,8 +441,8 @@ export default function CoursesPage() {
                 <div className="w-full">
                   <h3 className="text-sm font-medium mb-2">课程分类</h3>
                   <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-                    <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
-                      {categories.slice(0, 6).map((category) => (
+                    <TabsList className="grid grid-cols-3 md:grid-cols-4 h-auto">
+                      {categories.slice(0, 4).map((category) => (
                         <TabsTrigger key={category.id} value={category.id} className="text-xs md:text-sm py-1.5 px-2">
                           {category.name}
                         </TabsTrigger>
@@ -435,9 +450,19 @@ export default function CoursesPage() {
                     </TabsList>
                   </Tabs>
                   <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full mt-2">
-                    <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
-                      {categories.slice(6).map((category) => (
-                        <TabsTrigger key={category.id} value={category.id} className="text-xs md:text-sm py-1.5 px-2">
+                    <TabsList className="grid grid-cols-3 md:grid-cols-4 h-auto mt-2">
+                      {categories.slice(4).map((category) => (
+                        <TabsTrigger
+                          key={category.id}
+                          value={category.id}
+                          onClick={() =>
+                            category.id !== "all" &&
+                            ["tools", "datasets", "readings", "achievements"].includes(category.id)
+                              ? handleNewCategoryClick(category.name)
+                              : null
+                          }
+                          className="text-xs md:text-sm py-1.5 px-2"
+                        >
                           {category.name}
                         </TabsTrigger>
                       ))}
@@ -486,7 +511,10 @@ export default function CoursesPage() {
                     fill
                     className="object-cover"
                   />
-                  {course.featured && (
+                  {course.id <= 5 && (
+                    <Badge className="absolute top-3 left-3 bg-green-500 hover:bg-green-600">免费</Badge>
+                  )}
+                  {course.id > 5 && course.featured && (
                     <Badge className="absolute top-3 left-3 bg-amber-500 hover:bg-amber-600">精选</Badge>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">

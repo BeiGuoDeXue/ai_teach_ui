@@ -99,6 +99,17 @@ export default function Header() {
     setCurrentUser(null)
   }
 
+  const navItems = [
+    { href: "/", label: "首页" },
+    { href: "/courses", label: "课程" },
+    { href: "/ai-experience", label: "AI体验" },
+    { href: "/ai-code-assistant", label: "AI代码助手" },
+    { href: "/tools", label: "工具" },
+    { href: "/datasets", label: "数据集" },
+    { href: "/readings", label: "读本" },
+    { href: "/activities", label: "活动" },
+  ]
+
   return (
     <header className="border-b sticky top-0 z-50 bg-white">
       <div className="bg-gray-900 text-white py-1">
@@ -129,30 +140,15 @@ export default function Header() {
         </div>
 
         <nav className="hidden md:flex items-center">
-          <Link
-            href="/"
-            className={`text-gray-700 hover:text-amber-600 px-10 py-2 ${pathname === "/" ? "text-amber-600 font-medium" : ""}`}
-          >
-            首页
-          </Link>
-          <Link
-            href="/courses"
-            className={`text-gray-700 hover:text-amber-600 px-10 py-2 ${pathname.startsWith("/courses") ? "text-amber-600 font-medium" : ""}`}
-          >
-            课程
-          </Link>
-          <Link
-            href="/ai-experience"
-            className={`text-gray-700 hover:text-amber-600 px-10 py-2 ${pathname.startsWith("/ai-experience") ? "text-amber-600 font-medium" : ""}`}
-          >
-            AI 体验
-          </Link>
-          <Link
-            href="/ai-code-assistant"
-            className={`text-gray-700 hover:text-amber-600 px-10 py-2 ${pathname.startsWith("/ai-code-assistant") ? "text-amber-600 font-medium" : ""}`}
-          >
-            AI 代码助手
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`text-gray-700 hover:text-amber-600 px-4 py-2 ${pathname.startsWith(item.href) ? "text-amber-600 font-medium" : ""}`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center space-x-4">
